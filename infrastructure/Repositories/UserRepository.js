@@ -35,6 +35,13 @@ class UserRepository extends BaseRepository {
       delete data.birthday;
     }
   }
+
+  updateWithoutTrans(clauses, attributes, returning = ['id']) {
+    let query = this.cloneQuery();
+    query = this.handleConditions(query, clauses, true);
+
+    return query.update(attributes, returning);
+  }
 }
 
 export default UserRepository;

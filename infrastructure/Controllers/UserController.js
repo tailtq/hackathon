@@ -54,7 +54,14 @@ class UserController extends BaseController {
   setSession(req, user) {
     req.session.cUser = this.filterFields(user, this.loginFields);
     req.session.cUser.encodedId = this.encode(user.id);
-    req.session.cUser.token = jwt.sign({ user }, JWT_SECRET, { expiresIn: EXPIRATION });
+    req.session.cUser.type = this.type;
+
+    const tokenData = {
+      id: user.id,
+      type: this.type,
+    };
+
+    req.session.cUser.token = jwt.sign({ user: tokenData }, JWT_SECRET, { expiresIn: EXPIRATION });
   }
 }
 

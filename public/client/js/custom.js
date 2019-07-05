@@ -1,3 +1,15 @@
+function init_checkUserOnline() {
+  const token = $('main').data('user-token');
+  const userId = $('main').data('user-id');
+
+
+  if (token && userId) {
+    const messageSocket = io.connect('/', {
+      query: `token=${token}`
+    });
+  }
+}
+
 function sendMessage(content, callback) {
   $.ajax({
     url: '/messages',
@@ -68,4 +80,8 @@ $(function () {
     $('#chat-circle').toggle('scale');
     $('.chat-box').toggle('scale');
   })
+});
+
+$(document).ready(() => {
+  init_checkUserOnline();
 });
