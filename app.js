@@ -12,19 +12,29 @@ import './config/database';
 import configRouter from './config/routes';
 import useHelpers from './infrastructure/Helpers/LocalHelpers';
 
+import configSocket from './infrastructure/Helpers/SocketHelper'
+
 const app = express();
 const http = process.env.APP_ENV ? Http.Server(app) : Https.Server(app);
+
+
+configSocket(http)
+
+
 const PostgreSqlStore = ConnectPg(Session);
 const session = Session({
   secret: process.env.SESSION_SECRET,
   name: 'camil.session',
   resave: false,
   saveUninitialized: true,
-  cookie: { maxAge: parseInt(process.env.SESSION_LIFETIME, 10) * 1000 },
+  cookie: {
+    maxAge: parseInt(process.env.SESSION_LIFETIME, 10) * 1000
+  },
   store: new PostgreSqlStore({
     conString: process.env.DB_URL,
   }),
 });
+
 
 app.engine('ejs', ejsLocals);
 app.set('view engine', 'ejs');

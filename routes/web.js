@@ -6,7 +6,11 @@ import studentRoutes from '../app/Student/routes';
 import tutorRoutes from '../app/Tutor/routes';
 import handleException from '../infrastructure/Middleware/handleException';
 
+
+
 const router = express.Router();
+
+
 
 router.use('/dashboard', dashboardRoutes);
 
