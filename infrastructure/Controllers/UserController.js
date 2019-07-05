@@ -1,12 +1,17 @@
 import bcrypt from 'bcryptjs';
+import knex from '../../config/database';
 import BaseController from './BaseController';
+import jwt from 'jsonwebtoken';
+import { EXPIRATION, JWT_SECRET } from '../../config/jsonwebtoken';
 
 class UserController extends BaseController {
-  loginFields = ['id', 'email', 'name', 'avatar'];
-
   type;
 
   repository;
+
+  loginFields = ['id', 'email', 'name', 'avatar'];
+
+  signUpFields = ['email', 'password', 'name', 'phone', 'address'];
 
   constructor() {
     super();
@@ -31,20 +36,25 @@ class UserController extends BaseController {
 
     this.setSession(req, user);
 
-    return res.redirect('/');
+    return res.redirect('/dashboard');
   }
 
   showSignUpForm(req, res) {
     return res.render(`app/client/${this.type}/sign-up`);
   }
 
-  signUp(req, res) {
+  async signUp(req, res) {
+    const data = this.filterFields(req.body, this.signUpFields);
+    const user = await knex.transaction(trx => this.repository.signUp(data, trx));
+    this.setSession(req, user);
 
+    return res.redirect('/dashboard');
   }
 
   setSession(req, user) {
     req.session.cUser = this.filterFields(user, this.loginFields);
     req.session.cUser.encodedId = this.encode(user.id);
+    req.session.cUser.token = jwt.sign({ user }, JWT_SECRET, { expiresIn: EXPIRATION });
   }
 }
 

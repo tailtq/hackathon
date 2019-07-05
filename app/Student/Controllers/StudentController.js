@@ -1,4 +1,3 @@
-import bcrypt from 'bcryptjs';
 import StudentRepository from '../Repositories/StudentRepository';
 import UserController from '../../../infrastructure/Controllers/UserController';
 

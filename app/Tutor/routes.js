@@ -17,4 +17,12 @@ router.post(
   tutorController.callMethod('signIn')
 );
 
+router.get('/sign-up', tutorController.callMethod('showSignUpForm'));
+
+router.post(
+  '/sign-up',
+  tutorRequests.signUpRequest(),
+  tutorController.callMethod('signUp')
+);
+
 export default router;

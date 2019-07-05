@@ -7,3 +7,5 @@ export const BANNER_IMAGE = 'Image/Banner';
 export const AVATAR_IMAGE = 'Image/Avatar';
 
 export const SLIDE_IMAGE = 'Image/Slide';
+
+export const DEFAULT_AVATAR = '/public/assets/client/images/avatar.jpg';

@@ -5,5 +5,5 @@ export default (err, req, res, next) => {
   let code = err.code || 500;
   code = (code > 502) ? 500 : code;
 
-  return res.status(code).json(ResponseTrait.error(message, code));
+  return next(err);
 };
