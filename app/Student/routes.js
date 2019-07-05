@@ -6,15 +6,14 @@ const router = express.Router();
 const studentController = new StudentController();
 const studentRequests = new StudentRequests();
 
-router.get(
-  '/sign-in',
-  studentController.callMethod('showSignInForm')
-);
+router.get('/sign-in', studentController.callMethod('showSignInForm'));
 
 router.post(
   '/sign-in',
   studentRequests.signInRequest(),
   studentController.callMethod('signIn')
 );
+
+router.get('/sign-up', studentController.callMethod('showSignUpForm'));
 
 export default router;

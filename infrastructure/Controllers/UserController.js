@@ -4,17 +4,19 @@ import BaseController from './BaseController';
 class UserController extends BaseController {
   loginFields = ['id', 'email', 'name', 'avatar'];
 
+  type;
+
   repository;
 
   constructor() {
     super();
   }
 
-  showSignInForm(req, res, type) {
-    return res.render(`app/client/${type}/sign-in`);
+  showSignInForm(req, res) {
+    return res.render(`app/client/${this.type}/sign-in`);
   }
 
-  async signIn(req, res, type) {
+  async signIn(req, res) {
     const { email, password } = req.body;
     const user = await this.repository.getBy({ email });
 
@@ -24,12 +26,20 @@ class UserController extends BaseController {
         password: { msg: 'Email or password is not correct' },
       });
 
-      return res.redirect(`/${type}/sign-in`);
+      return res.redirect(`/${this.type}/sign-in`);
     }
 
     this.setSession(req, user);
 
     return res.redirect('/');
+  }
+
+  showSignUpForm(req, res) {
+    return res.render(`app/client/${this.type}/sign-up`);
+  }
+
+  signUp(req, res) {
+
   }
 
   setSession(req, user) {

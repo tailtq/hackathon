@@ -9,14 +9,6 @@ class StudentController extends UserController {
     super();
     this.repository = StudentRepository.getRepository();
   }
-
-  showSignInForm(req, res) {
-    return super.showSignInForm(req, res, this.type);
-  }
-
-  async signIn(req, res) {
-    return super.signIn(req, res, this.type)
-  }
 }
 
 export default StudentController;
