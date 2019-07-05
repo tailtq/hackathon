@@ -1,58 +1,44 @@
-import Joi from 'joi';
-import getSlug from 'speakingurl';
-
-import ResponseTrait from '../Traits/ResponseTrait';
+import { check, validationResult } from 'express-validator/check';
+import BadRequestException from '../Exceptions/BadRequestException';
+import ResponseHelper from '../Helpers/ResponseHelper';
+import { loopHashids } from '../Helpers/HashidsHelper';
 
 class BaseRequest {
-  validate(key) {
-    return async (req, res, next) => {
-      if (this[`${key}Request`]) {
-        const schema = await this[`${key}Request`](req.body, req.params);
-        const callback = err => (err ? res.json(ResponseTrait.badRequest(err.details)) : next());
-        return Joi.validate(req.body, schema, { abortEarly: false, allowUnknown: true }, callback);
-      }
-
-      return res.json(ResponseTrait.notFound('REQUEST_SCHEMA_NOT_FOUND'));
-    };
+  constructor() {
+    this.repository = null;
   }
 
-  countForeignKey(Repository, value) {
-    return value instanceof Array
-      ? Repository.getRepository().count(query => query.whereIn('id', value))
-      : 0;
+  deleteElementsRequest() {
+    return [
+      check('ids').isArray().not().isEmpty(),
+      check('ids[*]').isInt().not().isEmpty(),
+      this.validate,
+    ];
   }
 
-  async getExistSlug(Repository, value, id) {
-    let condition = { slug: getSlug(value) };
-
-    if (id) {
-      condition = q => q.whereNot('id', id).where('slug', getSlug(value));
+  validate(req, res, next) {
+    const errors = validationResult(req);
+    if (errors.isEmpty()) {
+      return next();
     }
 
-    const element = await Repository.getRepository().getBy(condition, ['slug']);
+    if (req.headers['content-type'] === 'application/json'
+      || req.headers['x-requested-with'] === 'XMLHttpRequest') {
+      return res.json(ResponseHelper.error(errors.mapped(), 400));
+    }
+    req.flash('oldValue', loopHashids(req.body));
+    req.flash('errors', errors.mapped());
 
-    return element ? element.slug : undefined;
+    return res.redirectBack();
   }
 
-  async getExistSlugInCurrentDay(Repository, value) {
-    const condition = { slug: getSlug(value) };
-    const element = await Repository.getRepository().getExistSlugInDate(condition, new Date());
+  async verifyExistedData(clauses) {
+    const validate = await this.repository.checkExist(clauses);
+    if (validate) {
+      return Promise.reject(new BadRequestException());
+    }
 
-    return element ? element.slug : undefined;
-  }
-
-  async getExistSlugByElement(Repository, value, id) {
-    const condition = q => q.whereNot('id', id).where('slug', getSlug(value));
-    let element = await Repository.getRepository().getById(id, ['createdAt']);
-    element = await Repository.getRepository().getExistSlugInDate(condition, element.createdAt);
-
-    return element ? element.slug : undefined;
-  }
-
-  deleteRequest() {
-    return Joi.object().keys({
-      ids: Joi.array().items(Joi.number().required()).required(),
-    });
+    return Promise.resolve();
   }
 }
 

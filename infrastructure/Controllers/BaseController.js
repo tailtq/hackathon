@@ -1,4 +1,5 @@
 import ResponseHelper from '../Helpers/ResponseHelper';
+import { decode, encode } from '../Helpers/HashidsHelper';
 
 class BaseController {
   filterFields(input, fields, addition) {
@@ -33,5 +34,6 @@ class BaseController {
 }
 
 Object.assign(BaseController.prototype, ResponseHelper);
+Object.assign(BaseController.prototype, { encode, decode });
 
 export default BaseController;
