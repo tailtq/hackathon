@@ -7,6 +7,7 @@ import ConnectPg from 'connect-pg-simple';
 import flash from 'connect-flash';
 import Http from 'http';
 import Https from 'https';
+import mongoose from 'mongoose';
 
 import './config/database';
 import configRouter from './config/routes';
@@ -25,6 +26,9 @@ const session = Session({
     conString: process.env.DB_URL,
   }),
 });
+
+mongoose.Promise = global.Promise;
+mongoose.connect(process.env.DB_MONGODB_URL, { useNewUrlParser: true });
 
 app.engine('ejs', ejsLocals);
 app.set('view engine', 'ejs');

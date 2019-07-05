@@ -15,6 +15,7 @@
     <link href="/public/client/css/material-dashboard.css?v=1.2.1" rel="stylesheet" />
     <!--  CSS for Demo Purpose, don't include it in your project     -->
     <link href="/public/client/css/demo.css" rel="stylesheet" />
+    <link href="/public/client/css/custom.css" rel="stylesheet" />
     <!--     Fonts and icons     -->
     <link href="http://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons" />
@@ -385,41 +386,31 @@
                     <%- body %>
                 </div>
             </div>
-            <footer class="footer">
-                <div class="container-fluid">
-                    <nav class="pull-left">
-                        <ul>
-                            <li>
-                                <a href="#">
-                                    Home
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#">
-                                    Company
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#">
-                                    Portofolio
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#">
-                                    Blog
-                                </a>
-                            </li>
-                        </ul>
-                    </nav>
-                    <p class="copyright pull-right">
-                        &copy;
-                        <script>
-                            document.write(new Date().getFullYear())
-                        </script>
-                        <a href="http://www.creative-tim.com"> Creative Tim </a>, made with love for a better web
-                    </p>
+        </div>
+
+        <div id="chat-circle" class="btn btn-raised">
+            <div id="chat-overlay"></div>
+            <i class="material-icons">speaker_phone</i>
+        </div>
+
+        <div class="chat-box">
+            <div class="chat-box-header">
+                ChatBot
+                <span class="chat-box-toggle"><i class="material-icons">close</i></span>
+            </div>
+            <div class="chat-box-body">
+                <div class="chat-box-overlay">
                 </div>
-            </footer>
+                <div class="chat-logs">
+
+                </div>
+            </div>
+            <div class="chat-input">
+                <form>
+                    <input type="text" id="chat-input" placeholder="Send a message..."/>
+                    <button type="submit" class="chat-submit" id="chat-submit"><i class="material-icons">send</i></button>
+                </form>
+            </div>
         </div>
     </div>
 </body>
@@ -466,6 +457,7 @@
 <script src="/public/client/js/material-dashboard.js?v=1.2.1"></script>
 <!-- Material Dashboard DEMO methods, don't include it in your project! -->
 <script src="/public/client/js/demo.js"></script>
+<script src="/public/client/js/custom.js"></script>
 <script type="text/javascript">
     $(document).ready(function() {
 
