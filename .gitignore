@@ -1,0 +1,9 @@
+.env
+node_modules/
+.idea/
+yarn.lock
+public/tmp/
+public/themes/
+package-lock.json
+test.js
+test/
