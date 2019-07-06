@@ -54,6 +54,10 @@ class TutorController extends UserController {
   contact(req, res) {
     return res.render('app/client/tutors/contact');
   }
+
+  contactDetail(req, res) {
+    return res.render('app/client/tutors/contact');
+  }
 }
 
 export default TutorController;

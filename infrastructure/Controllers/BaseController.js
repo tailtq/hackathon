@@ -1,5 +1,5 @@
 import ResponseHelper from '../Helpers/ResponseHelper';
-import { decode, encode } from '../Helpers/HashidsHelper';
+import { decode, encode } from '../Helpers/Core/HashidsHelper';
 
 class BaseController {
   filterFields(input, fields, addition) {

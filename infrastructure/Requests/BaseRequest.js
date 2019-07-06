@@ -1,7 +1,7 @@
 import { check, validationResult } from 'express-validator/check';
 import BadRequestException from '../Exceptions/BadRequestException';
 import ResponseHelper from '../Helpers/ResponseHelper';
-import { loopHashids } from '../Helpers/HashidsHelper';
+import { loopHashids } from '../Helpers/Core/HashidsHelper';
 
 class BaseRequest {
   constructor() {
