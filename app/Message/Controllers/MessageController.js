@@ -13,7 +13,6 @@ class MessageController extends BaseController {
   async loadMessages(req, res) {
     const { cUser } = req.session;
     const result = await Message.find({ userId: cUser.id }, []);
-    // Handle Wit.AI
 
     return this.success(res, result);
   }
@@ -32,15 +31,21 @@ class MessageController extends BaseController {
     const processes = [
       Message.create(userMessage),
     ];
+    // Handle Wit.AI
+    const condition = content.trim().toLowerCase();
 
-    if (content.trim().toLowerCase().indexOf('giải bài toán') >= 0) {
+    if (condition.indexOf('giải bài toán') >= 0) {
       processes.push(this.searchAlgebraQuestion(content, cUser));
-    } else if (content.trim().toLowerCase().indexOf('cân bằng phương trình') >= 0) {
+    } else if (condition.indexOf('cân bằng phương trình') >= 0) {
       processes.push(this.searchAlgebraQuestion(content, cUser));
-    } else if (content.trim().toLowerCase().indexOf('nguyên tố hoá học') >= 0) {
-      processes.push(this.searchChemicalElement(content, cUser));
+    } else if (condition.indexOf('nguyên tố hoá học') >= 0) {
+      const search = content.substr('nguyên tố hoá học '.length).trim().toLowerCase();
+      processes.push(this.searchChemicalElement(search, cUser));
+    } else if (condition.indexOf('dịch giúp tôi: ') >= 0) {
+      const text = content.substr('dịch giúp tôi: '.length).trim().toLowerCase();
+      processes.push(this.translateText(text, cUser));
     } else {
-      processes.push(this.getBotMessage(cUser, 'Tôi không thể hiểu message này', null));
+      processes.push(this.getBotMessage(cUser, 'Tôi không thể hiểu message này'));
     }
 
     [userMessage, botMessage] = await Promise.all(processes);
@@ -59,10 +64,9 @@ class MessageController extends BaseController {
     return this.getBotMessage(cUser, `<img src="${imageUrl}"/>`, data);
   }
 
-  async searchChemicalElement(text, cUser) {
+  async searchChemicalElement(search, cUser) {
     let elements = fs.readFileSync(path.join(__dirname, '/../../../public/data/periodicTable.json'), 'utf8');
     elements = JSON.parse(elements).elements;
-    let search = text.substr('nguyên tố hoá học '.length).trim().toLowerCase();
     let content;
 
     let searchedElement = elements.find((element) => {
@@ -84,10 +88,16 @@ class MessageController extends BaseController {
       content = 'Tôi không thể tìm thấy nguyên tố này';
     }
 
-    return this.getBotMessage(cUser, content, null);
+    return this.getBotMessage(cUser, content);
   }
 
-  getBotMessage(cUser, content, dataContent) {
+  async translateText(text, cUser) {
+    const translation = await translate(text, { from: 'en', to: 'vi' });
+
+    return this.getBotMessage(cUser, translation.text);
+  }
+
+  getBotMessage(cUser, content, dataContent = null) {
     const botMessage = {
       userId: cUser.id,
       name: 'Bot',
