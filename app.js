@@ -7,19 +7,17 @@ import ConnectPg from 'connect-pg-simple';
 import flash from 'connect-flash';
 import Http from 'http';
 import Https from 'https';
+import mongoose from 'mongoose';
 
 import './config/database';
 import configRouter from './config/routes';
 import useHelpers from './infrastructure/Helpers/LocalHelpers';
-
-import configSocket from './infrastructure/Helpers/SocketHelper'
+import configSocket from './infrastructure/Helpers/SocketHelper';
 
 const app = express();
 const http = process.env.APP_ENV ? Http.Server(app) : Https.Server(app);
 
-
-configSocket(http)
-
+configSocket(http);
 
 const PostgreSqlStore = ConnectPg(Session);
 const session = Session({
@@ -35,6 +33,8 @@ const session = Session({
   }),
 });
 
+mongoose.Promise = global.Promise;
+mongoose.connect(process.env.DB_MONGODB_URL, { useNewUrlParser: true });
 
 app.engine('ejs', ejsLocals);
 app.set('view engine', 'ejs');

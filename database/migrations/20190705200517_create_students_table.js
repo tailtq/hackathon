@@ -10,6 +10,7 @@ exports.up = knex => knex.schema.createTable('students', (table) => {
   table.string('address');
   table.string('avatar');
   table.string('resetPasswordToken', 50);
+  table.specificType('status', 'smallint').defaultTo(0); // 0: offline, 1: online
   table.dateTime('tokenExpiredAt');
   table.string('slug', 100).notNullable();
   table.timestamp('createdAt').defaultTo(knex.fn.now());

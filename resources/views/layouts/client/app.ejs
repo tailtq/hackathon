@@ -15,6 +15,7 @@
     <link href="/public/client/css/material-dashboard.css?v=1.2.1" rel="stylesheet" />
     <!--  CSS for Demo Purpose, don't include it in your project     -->
     <link href="/public/client/css/demo.css" rel="stylesheet" />
+    <link href="/public/client/css/custom.css" rel="stylesheet" />
     <!--     Fonts and icons     -->
     <link href="http://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons" />
@@ -23,7 +24,7 @@
 
 <body>
     <div class="wrapper">
-        <main class="mt-0" data-user-id="<%= cUser ? cUser.encodedId : null %>" data-user-token="<%= cUser ? cUser.token : null %>"></main>
+        <main class="mt-0" data-user-id="<%= cUser ? cUser.encodedId : null %>" data-user-token="<%= cUser ? cUser.token : null %>">
             <div class="sidebar" data-active-color="rose" data-background-color="black" data-image="/public/client/img/sidebar-1.jpg">
                 <!--
             Tip 1: You can change the color of active element of the sidebar using: data-active-color="purple | blue | green | orange | red | rose"
@@ -387,41 +388,31 @@
                     <%- body %>
                 </div>
             </div>
-            <footer class="footer">
-                <div class="container-fluid">
-                    <nav class="pull-left">
-                        <ul>
-                            <li>
-                                <a href="#">
-                                    Home
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#">
-                                    Company
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#">
-                                    Portofolio
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#">
-                                    Blog
-                                </a>
-                            </li>
-                        </ul>
-                    </nav>
-                    <p class="copyright pull-right">
-                        &copy;
-                        <script>
-                            document.write(new Date().getFullYear())
-                        </script>
-                        <a href="http://www.creative-tim.com"> Creative Tim </a>, made with love for a better web
-                    </p>
+        </div>
+
+        <div id="chat-circle" class="btn btn-raised">
+            <div id="chat-overlay"></div>
+            <i class="material-icons">speaker_phone</i>
+        </div>
+
+        <div class="chat-box">
+            <div class="chat-box-header">
+                ChatBot
+                <span class="chat-box-toggle"><i class="material-icons">close</i></span>
+            </div>
+            <div class="chat-box-body">
+                <div class="chat-box-overlay">
                 </div>
-            </footer>
+                <div class="chat-logs">
+
+                </div>
+            </div>
+            <div class="chat-input">
+                <form>
+                    <input type="text" id="chat-input" placeholder="Send a message..."/>
+                    <button type="submit" class="chat-submit" id="chat-submit"><i class="material-icons">send</i></button>
+                </form>
+            </div>
         </div>
     </div>
 </body>
@@ -468,7 +459,7 @@
 <script src="/public/client/js/material-dashboard.js?v=1.2.1"></script>
 <!-- Material Dashboard DEMO methods, don't include it in your project! -->
 <script src="/public/client/js/demo.js"></script>
-<script src="/public/client/js/main.js"></script>
+<script src="/public/client/js/custom.js"></script>
 
 <script src="/socket.io/socket.io.js"></script>
 <script>
@@ -476,7 +467,6 @@
 </script>
 <script type="text/javascript">
     $(document).ready(function() {
-
         // Javascript method's body can be found in assets/js/demos.js
         demo.initDashboardPageCharts();
 
