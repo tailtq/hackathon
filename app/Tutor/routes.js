@@ -31,4 +31,6 @@ router.post(
 
 router.get('/sign-out', tutorController.callMethod('signOut'));
 
+router.get('/:id/contact', tutorController.callMethod('contact'));
+
 export default router;
