@@ -1,11 +1,14 @@
 import express from 'express';
 import TutorController from './Controllers/TutorController';
 import TutorRequests from './Requests/TutorRequests';
-import { verifyAuthentication } from '../../infrastructure/Middleware/verifyAuthentication';
+import { verifyAuthentication, verifyNotAuthentication } from '../../infrastructure/Middleware/verifyAuthentication';
+import { decodeParams } from '../../infrastructure/Middleware/decodeMiddleware';
 
 const router = express.Router();
 const tutorController = new TutorController();
 const tutorRequests = new TutorRequests();
+
+router.param('id', decodeParams);
 
 router.get(
   '/sign-in',
@@ -31,6 +34,10 @@ router.post(
 
 router.get('/sign-out', tutorController.callMethod('signOut'));
 
-router.get('/:id/contact', tutorController.callMethod('contact'));
+router.use(verifyNotAuthentication);
+
+router.get('/online', tutorController.callMethod('contact'));
+
+router.get('/:id/contact', tutorController.callMethod('contactDetail'));
 
 export default router;

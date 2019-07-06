@@ -1,13 +1,11 @@
 import Hashids from 'hashids';
 
-import BadRequestException from '../Exceptions/BadRequestException';
-import { charsQuantity, hashidsChars, keys } from '../../config/hashids';
+import BadRequestException from '../../Exceptions/BadRequestException';
+import { charsQuantity, hashidsChars, keys } from '../../../config/hashids';
 
-const hashids = new Hashids('Kibara', charsQuantity, hashidsChars);
+const hashids = new Hashids('Swaptime', charsQuantity, hashidsChars);
 
 export const encode = id => hashids.encodeHex(id);
-
-export const encodeIds = ids => ids.map(id => encode(id));
 
 export const decode = id => hashids.decodeHex(id);
 
@@ -27,7 +25,7 @@ export const loopHashids = (data) => {
             data[key].forEach((value, index) => {
               data[key][index] = hashids.encodeHex(value);
             });
-          } else if (typeof data[key] === 'number') {
+          } else {
             data[key] = hashids.encodeHex(data[key]);
           }
         }

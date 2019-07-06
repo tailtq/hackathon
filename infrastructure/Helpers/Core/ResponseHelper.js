@@ -1,14 +1,12 @@
-import { loopHashids } from './Core/HashidsHelper';
-
 const trait = {
-  success: (res, data) => res.status(200).json({
+  success: data => ({
     status: true,
     statusCode: 200,
-    data: loopHashids(data),
+    data,
     message: '200 OK!',
   }),
 
-  error: (message, statusCode) => ({
+  error: (message = 'INTERNAL_ERROR_SERVER', statusCode) => ({
     status: false,
     statusCode: statusCode || 500,
     data: {},
