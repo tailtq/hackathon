@@ -18,9 +18,9 @@
                     </h5>
                 </div>
                 <div class="footer">
-                    <h4 class="card-title"><%= tutor.name %></h4>
+                    <h4 class="card-title"><a href="/tutors/<%= tutor.id %>"><%= tutor.name %></a></h4>
                     <div class="card-avatar">
-                        <a href="#pablo">
+                        <a href="/tutors/<%= tutor.id %>">
                             <img class="img" src="<%= tutor.avatar %>"/>
                         </a>
                     </div>

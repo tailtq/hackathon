@@ -9,6 +9,7 @@ exports.up = knex => knex.schema.createTable('tutors', (table) => {
   table.string('phone', 20);
   table.date('birthday');
   table.string('address');
+  table.string('profession', 100);
   table.string('avatar');
   table.string('resetPasswordToken', 50);
   table.specificType('status', 'smallint').defaultTo(0); // 0: offline, 1: online

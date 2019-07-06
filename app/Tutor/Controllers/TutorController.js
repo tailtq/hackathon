@@ -3,11 +3,12 @@ import TutorRepository from '../Repositories/TutorRepository';
 import UserController from '../../../infrastructure/Controllers/UserController';
 import MajorRepository from '../../Major/Repositories/MajorRepository';
 import knex from '../../../config/database';
+import NotFoundException from '../../../infrastructure/Exceptions/NotFoundException';
 
 class TutorController extends UserController {
   type = 'tutors';
 
-  signUpFields = ['majors', 'email', 'password', 'name', 'phone', 'address', 'description'];
+  signUpFields = ['majors', 'email', 'password', 'name', 'phone', 'address', 'profession', 'description'];
 
   constructor() {
     super();
@@ -50,9 +51,10 @@ class TutorController extends UserController {
     return ids;
   }
 
-  async contactOnlineTutors(req, res) {
+  async listOnlineTutors(req, res) {
     let { majors } = req.query;
     let condition = { status: 1 };
+
     if (majors) {
       majors = majors.split(',').filter(e => Number.isInteger(parseInt(e))).join(',');
       condition = q => q.where(knex.raw(`"majorIds" @> ARRAY[${majors}]`)).where({ status: 1 });
@@ -62,7 +64,20 @@ class TutorController extends UserController {
     return res.render('app/client/tutors/list-online', this.hashIds({ tutors }));
   }
 
-  contactDetail(req, res) {
+  async viewProfile(req, res) {
+    const { id } = req.params;
+    const tutor = await this.repository.getById(id);
+
+    if (!tutor) {
+      throw new NotFoundException();
+    }
+
+    return res.render('app/client/tutors/detail', this.hashIds({ tutor }));
+  }
+
+  contact(req, res) {
+
+
     return res.render('app/client/tutors/contact');
   }
 }
