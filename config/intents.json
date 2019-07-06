@@ -1,0 +1,137 @@
+{
+  "intents": [
+    {
+      "tag": "greeting",
+      "responses": [
+        "Xin chào bạn.",
+        "Chào bạn, tôi có thể giúp gì cho bạn",
+        "Chào bạn, ngày mới tốt lành.",
+        "Xin chào."
+      ],
+      "context": [
+        ""
+      ]
+    },
+    {
+      "tag": "goodbye",
+      "responses": [
+        "Tạm biêt.",
+        "Hẹn gặp lại",
+        "Chào tạm biệt",
+        "Hẹn gặp lại bạn lần sau"
+      ],
+      "context": [
+        ""
+      ]
+    },
+    {
+      "tag": "affirm",
+      "responses": [
+        "Cảm ơn bạn, Rất vui khi được giúp đỡ bạn",
+        "Cảm ơn bạn, tôi sẽ dần hoàn thiện mình",
+        "Cảm ơn bạn rất nhiều",
+        "Hân hạnh"
+      ],
+      "context": [
+        ""
+      ]
+    },
+    {
+      "tag": "thanks",
+      "responses": [
+        "Hân hạnh",
+        "Luôn sẵn lòng :)",
+        "Cảm ơn bạn, giúp được bạn là vinh dự của tôi"
+      ],
+      "context": [
+        ""
+      ]
+    },
+    {
+      "tag": "deny",
+      "responses": [
+        "Xin lỗi, tôi đang dần hoàn thiện",
+        "Cảm ơn bạn đã góp ý, tôi sẽ dần hoàn thiện hơn",
+        "Cảm ơn thông tin của bạn, tôi đang dần hoàn thiện"
+      ],
+      "context": [
+        ""
+      ]
+    },
+
+    {
+      "tag": "help",
+      "responses": [
+        "Bạn gặp vấn đề gì nào ?",
+        "Bạn đang gặp khó khăn gì à, hãy chia sẻ cho tôi, tôi có thể giúp bạn",
+        "Tôi có thể giúp bạn"        
+      ],
+      "context": [
+        ""
+      ]
+    },
+    {
+      "tag": "introduction",
+      "responses": [
+        "Tối là chat bot có khả năng giúp bạn giải những vấn đề cơ bản trong cuộc sống",
+        "Tôi có thể giúp bạn một ít, ngoài ra tôi có thể kết nối gia sư với bạn",
+        "Là một chatbot tôi có thể giúp bạn trong vài lĩnh vực như toán, hóa, lích sử ...",
+        "Tối có thể giúp bạn vài bài tập đơn giản như cân bằng hóa học, giải phương trình, ...",
+        "Tối là chatbot, rất hân hạnh làm quen với bạn"
+      ],
+      "context": [
+        ""
+      ]
+    },
+    {
+      "tag": "cant",
+      "responses": [
+        "Tôi nghĩ vấn đề này ngoài khả năng của tôi.",
+        "Xin lỗi bạn, tôi chưa được học về vấn đề này",
+        "Tôi chưa thể giúp bạn ngay bây giờ, tôi có thể kết nối gia sư với bạn",
+        "Vấn đề này khá mới với tôi, tôi có thể học sau, xin lỗi bạn",
+        "Xin lỗi vì lĩnh vực này ngoài tầm hiểu biết của tôi, tôi có thể kết nối gia sư cho bạn"
+      ],
+      "context": [
+        ""
+      ]
+      
+    },
+    {
+      "tag": "solveMath",
+      "responses": [
+        "Đây là kết quả của tối, bạn có thể tham khảo:\n",
+        "Đây là kết quả: \n",
+        "Kết quả nè:\n",
+        "Kết quả:"
+      ],
+      "context": [
+        ""
+      ]
+      
+    },
+    {
+      "tag": "solveChem",
+      "responses": [
+        "Đây là kết quả của tối, bạn có thể tham khảo:\n",
+        "Đây là kết quả: \n",
+        "Kết quả:"
+      ],
+      "context": [
+        ""
+      ]
+      
+    },
+    {
+      "tag": "getInfo",
+      "responses": [
+        "Đây là kết quả của tối, bạn có thể tham khảo:\n",
+        "Tôi đã có kết quả, bạn thấy thế nào:\n"
+      ],
+      "context": [
+        ""
+      ]
+      
+    }
+  ]
+}

@@ -22,10 +22,7 @@ class MessageController extends BaseController {
 
   async sendMessage(req, res) {
     const { cUser } = req.session;
-    // const {  } = req.p;
-    console.log(req.body);
-    return
-    
+    const { content } = req.body;
     let botMessage;
     let userMessage = {
       userId: cUser.id,
@@ -37,6 +34,9 @@ class MessageController extends BaseController {
     const processes = [
       Message.create(userMessage),
     ];
+
+
+
     // Handle Wit.AI
     const condition = content.trim().toLowerCase();
 
