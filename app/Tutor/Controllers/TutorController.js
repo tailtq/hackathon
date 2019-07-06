@@ -1,4 +1,3 @@
-import bcrypt from 'bcryptjs';
 import getSlug from 'speakingurl';
 import TutorRepository from '../Repositories/TutorRepository';
 import UserController from '../../../infrastructure/Controllers/UserController';
@@ -51,8 +50,10 @@ class TutorController extends UserController {
     return ids;
   }
 
-  contact(req, res) {
-    return res.render('app/client/tutors/contact');
+  async contactOnlineTutors(req, res) {
+    const tutors = await this.repository.getAllBy({ status: 1 }, ['id', 'name', 'avatar']);
+
+    return res.render('app/client/tutors/list-online', this.hashIds({ tutors }));
   }
 
   contactDetail(req, res) {

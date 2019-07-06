@@ -36,7 +36,7 @@ router.get('/sign-out', tutorController.callMethod('signOut'));
 
 router.use(verifyNotAuthentication);
 
-router.get('/online', tutorController.callMethod('contact'));
+router.get('/online', tutorController.callMethod('contactOnlineTutors'));
 
 router.get('/:id/contact', tutorController.callMethod('contactDetail'));
 

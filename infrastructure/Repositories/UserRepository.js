@@ -36,7 +36,7 @@ class UserRepository extends BaseRepository {
     }
   }
 
-  updateWithoutTrans(clauses, attributes, returning = ['id']) {
+  updateWithoutTrans(clauses, attributes, returning = ['status']) {
     let query = this.cloneQuery();
     query = this.handleConditions(query, clauses, true);
 
