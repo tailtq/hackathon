@@ -5,6 +5,8 @@ import translate from '@k3rn31p4nic/google-translate-api';
 import BaseController from '../../../infrastructure/Controllers/BaseController';
 import Message from '../Models/Message';
 import balanceChemicalEquation from '../../../infrastructure/Helpers/ChemicalEquationBalancerHelper';
+import solve from '../../../infrastructure/Helpers/Wolframalpha';
+import search from '../../../infrastructure/Helpers/WikiHelper';
 
 class MessageController extends BaseController {
   constructor() {
@@ -50,7 +52,7 @@ class MessageController extends BaseController {
 
       processes.push(this.translateText(text, cUser));
     } else {
-      processes.push(this.getBotMessage(cUser, 'Tôi không thể hiểu message này'));
+      processes.push(this.handleRemainCases(content, cUser));
     }
     // TODO: Đổi đơn vị -> Đợi Wit.AI
 
@@ -113,6 +115,26 @@ class MessageController extends BaseController {
       content = text;
     } else {
       content = result;
+    }
+
+    return this.getBotMessage(cUser, content);
+  }
+
+  async handleRemainCases(text, cUser) {
+    let content;
+    const dataContent = await search(text);
+    if (dataContent) {
+      return this.getBotMessage(cUser, dataContent.content, dataContent);
+    }
+
+    const question = await translate(text, { from: 'vi', to: 'en' });
+    const result = await solve(question.text);
+
+    if (result) {
+      const answer = await translate(result, { from: 'en', to: 'vi' });
+      content = answer.text;
+    } else {
+      content = 'Tôi không thể hiểu message này';
     }
 
     return this.getBotMessage(cUser, content);

@@ -60,6 +60,9 @@ $(function () {
     });
   });
 
+
+
+
   function generateMessage(msg, type) {
     INDEX++;
     const string = `
@@ -86,8 +89,95 @@ $(function () {
     $('#chat-circle').toggle('scale');
     $('.chat-box').toggle('scale');
   })
+
+
+
+ 
 });
 
 $(document).ready(() => {
+  let messageImgCount = 0;
+  $('#message-upload-image-btn').off('click').on('click', function () {
+    let image;
+    let cropper;
+    const target = 'message-upload-image-input';
+    // Click preview-image to trigger click on real input file
+    $(`#${target}`).trigger('click');
+    const self = $(this);
+
+
+    // Catch anychange of input file to read data
+    $(`#${target}`).off('change').on('change', function () {
+      // console.log('CHECK COUNT: ', messageImgCount);
+      // if (messageImgCount > 4) {
+      // 	$('#comment-upload-img').attr('data-content', "You're just allowed to upload 5 pictures at maximum!");
+      // 	$('#comment-upload-img').popover('enable');
+      // 	$('#comment-upload-img').popover('show');
+      // 	return;
+      // }
+
+      if (this.files) {
+        // Avoid click on another upload
+        if ((this.files.length + messageImgCount) <= 5) {
+          console.log(this.files);
+          Object.values(this.files).forEach((el) => {
+            const reader = new FileReader();
+            console.log("abc");
+            
+            if (el) {
+              const type = el.type.substr(0, el.type.indexOf('/'));
+              const size = el.size;
+
+              console.log('TOO: ', el);
+              // Check whether file is valid in size and type or not
+              if (type === 'image' && size <= 5242880 && size > 0) {
+                $('#modal-product-upload').modal('show');
+                reader.readAsDataURL(el);
+                $('#loading-crop-area').removeClass('d-none');
+              } else {
+                $('#error-exceed-quantity-text').text('Image type is not valid or Image size is over 5MB');
+                $('#error-warning-modal-exceed-quantity').modal('show');
+              }
+            }
+
+            reader.onload = function (e) {
+              if (messageImgCount === 0) {
+                $('#message-upload-image-list').removeClass('d-none').addClass('d-flex');
+              }
+              const newImg = new Image();
+              newImg.classList.add('message-upload-thumbnail', 'm-0');
+              newImg.src = e.target.result;
+
+              const newImgContainer = document.createElement('div');
+              newImgContainer.classList.add('position-relative', 'mr-3', 'd-flex', 'message-upload-img-item', 'col-auto');
+              newImgContainer.innerHTML = '<i class="fa fa-times cancel-thumbnail-upload-img" aria-hidden="true"></i>';
+
+              newImgContainer.prepend(newImg);
+              $('#message-upload-image-list').prepend(newImgContainer);
+              messageImgCount++;
+            };
+          });
+
+          $(`#${target}`).replaceWith($(`#${target}`).val('').clone(true));
+        } else {
+          $('#error-exceed-quantity-text').text('You can only add maximum 5 pictures at once!');
+          $('#error-warning-modal-exceed-quantity').modal('show');
+        }
+      }
+    });
+
+    $('#message-textarea').focus();
+
+    $(document).off('click').on('click', '.cancel-thumbnail-upload-img', function (e) {
+      const self = $(this);
+      self.parents('.message-upload-img-item').remove();
+      messageImgCount--;
+
+      if (messageImgCount === 0) {
+        $('#message-upload-image-list').removeClass('d-flex').addClass('d-none');
+      }
+    });
+  });
+  
   init_checkUserOnline();
 });
