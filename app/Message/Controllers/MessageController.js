@@ -52,6 +52,7 @@ class MessageController extends BaseController {
     } else {
       processes.push(this.getBotMessage(cUser, 'Tôi không thể hiểu message này'));
     }
+    // TODO: Đổi đơn vị -> Đợi Wit.AI
 
     [userMessage, botMessage] = await Promise.all(processes);
 

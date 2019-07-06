@@ -36,7 +36,7 @@ class UserController extends BaseController {
 
     this.setSession(req, user);
 
-    return res.redirect('/dashboard');
+    return res.redirect('/');
   }
 
   showSignUpForm(req, res) {
@@ -48,7 +48,12 @@ class UserController extends BaseController {
     const user = await knex.transaction(trx => this.repository.signUp(data, trx));
     this.setSession(req, user);
 
-    return res.redirect('/dashboard');
+    return res.redirect('/');
+  }
+
+  async signOut(req, res) {
+    delete req.session.cUser;
+    return res.redirect(`/${this.type}/sign-in`);
   }
 
   setSession(req, user) {

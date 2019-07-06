@@ -1,22 +1,21 @@
-import jwt from 'jsonwebtoken';
+export function verifyAuthentication(req, res, next) {
+  if (req.session.cUser) {
+    return res.redirect('/');
+  }
 
-import NotAuthenticatedException from '../Exceptions/NotAuthenticatedException';
-import { SECRET } from '../../config/jsonwebtoken';
-import ResponseTrait from '../Traits/ResponseTrait';
+  return next();
+}
 
-export default async (req, res, next) => {
-  let token = req.headers.authorization;
+export function verifyNotAuthentication(req, res, next) {
+  if (!req.session.cUser) {
+    req.session.prevUrl = req.originalUrl;
 
-  try {
-    if (!token) {
-      throw new NotAuthenticatedException();
+    if (req.originalUrl.split('/').splice(1)[0] === 'admin') {
+      return res.redirect('/admin/sign-in');
     }
 
-    token = token.substr('Bearer '.length);
-    req.user = jwt.verify(token, SECRET).user;
-
-    return next();
-  } catch (e) {
-    return res.json(ResponseTrait.error(e.message, e.code));
+    return res.redirect('/students/sign-in');
   }
-};
+
+  return next();
+}

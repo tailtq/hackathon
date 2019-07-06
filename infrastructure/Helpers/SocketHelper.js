@@ -63,8 +63,7 @@ function configSocket(http) {
         count: 1
       });
     }
-    console.log(ONLINE);
-    console.log('==========');
+
     socket.on('disconnect', () => {
       ONLINE.forEach((e, idx) => {
         if (e.id === id && e.type === type) {
