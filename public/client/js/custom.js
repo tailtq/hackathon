@@ -10,12 +10,14 @@ function init_checkUserOnline() {
   }
 }
 
-function sendMessage(content, callback) {
+function sendMessage(formData, callback) {
   $.ajax({
     url: '/messages',
     type: 'POST',
-    dataType: 'json',
-    data: { content }
+    dataType: 'JSON',
+    data: formData,
+    contentType: false,
+    processData: false,
   }).done(callback);
 }
 
@@ -36,21 +38,65 @@ function getMessages() {
   });
 }
 
+function dataURLtoFile(dataurl, filename) {
+  const arr = dataurl.split(','); const mime = arr[0].match(/:(.*?);/)[1];
+  const bstr = atob(arr[1]);
+  let n = bstr.length;
+  const u8arr = new Uint8Array(n);
+  while (n--) {
+    u8arr[n] = bstr.charCodeAt(n);
+  }
+  return new File([u8arr], filename, { type: mime });
+}
+
 $(function () {
   let INDEX = 0;
 
   getMessages();
 
   $('#chat-submit').click(function (e) {
+    const formData = new FormData();
     e.preventDefault();
-    const msg = $('#chat-input').val();
-    if (msg.trim() === '') {
-      return false;
+    const imgList=[]
+    const image = $('.message-upload-thumbnail')
+    if (image.length > 0) {
+      $.each(image, (index, item) => {
+        imgList.push(item.src);
+      });
     }
 
-    generateMessage(msg, 'self');
+    if (imgList.length > 0 && imgList.length <= 5) {
+      imgList.forEach((el) => {
+        const imgId = Math.round(Date.parse(new Date()) + Math.random())
+        
+        const image = dataURLtoFile(el, `file-${imgId}.jpg`);
+        console.log(image);
+        
+        formData.append('images', image);
+       
+      });
+    }
+    
 
-    sendMessage(msg, (res) => {
+
+    
+    const msg = $('#chat-input').val();
+    // if (msg.trim() === '') {
+    //   return false;
+    // } else {
+    //   formData.append('msg', msg)
+
+    // }
+    if (msg.trim() !== '') {
+      formData.append('msg', msg)
+    }
+      
+    console.log(formData);
+    
+    // generateMessage(msg, 'self');
+
+    sendMessage(formData, (res) => {
+      console.log(res)
       const { data } = res;
       if (data.bot && data.bot.content) {
         generateMessage(data.bot.content, 'user');
@@ -119,16 +165,16 @@ $(document).ready(() => {
       if (this.files) {
         // Avoid click on another upload
         if ((this.files.length + messageImgCount) <= 5) {
-          console.log(this.files);
+          // console.log(this.files);
           Object.values(this.files).forEach((el) => {
             const reader = new FileReader();
-            console.log("abc");
+            // console.log("abc");
             
             if (el) {
               const type = el.type.substr(0, el.type.indexOf('/'));
               const size = el.size;
 
-              console.log('TOO: ', el);
+              // console.log('TOO: ', el);
               // Check whether file is valid in size and type or not
               if (type === 'image' && size <= 5242880 && size > 0) {
                 $('#modal-product-upload').modal('show');

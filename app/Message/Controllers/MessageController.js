@@ -22,7 +22,10 @@ class MessageController extends BaseController {
 
   async sendMessage(req, res) {
     const { cUser } = req.session;
-    const { content } = req.body;
+    // const {  } = req.p;
+    console.log(req.body);
+    return
+    
     let botMessage;
     let userMessage = {
       userId: cUser.id,
