@@ -4,6 +4,7 @@ import path from 'path';
 import translate from '@k3rn31p4nic/google-translate-api';
 import BaseController from '../../../infrastructure/Controllers/BaseController';
 import Message from '../Models/Message';
+import balanceChemicalEquation from '../../../infrastructure/Helpers/ChemicalEquationBalancerHelper';
 
 class MessageController extends BaseController {
   constructor() {
@@ -37,12 +38,16 @@ class MessageController extends BaseController {
     if (condition.indexOf('giải bài toán') >= 0) {
       processes.push(this.searchAlgebraQuestion(content, cUser));
     } else if (condition.indexOf('cân bằng phương trình') >= 0) {
-      processes.push(this.searchAlgebraQuestion(content, cUser));
+      const text = content.substr('cân bằng phương trình: '.length).trim();
+
+      processes.push(this.balanceChemicalEquation(text, cUser));
     } else if (condition.indexOf('nguyên tố hoá học') >= 0) {
       const search = content.substr('nguyên tố hoá học '.length).trim().toLowerCase();
+
       processes.push(this.searchChemicalElement(search, cUser));
-    } else if (condition.indexOf('dịch giúp tôi: ') >= 0) {
+    } else if (condition.indexOf('dịch giúp tôi') >= 0) {
       const text = content.substr('dịch giúp tôi: '.length).trim().toLowerCase();
+
       processes.push(this.translateText(text, cUser));
     } else {
       processes.push(this.getBotMessage(cUser, 'Tôi không thể hiểu message này'));
@@ -95,6 +100,21 @@ class MessageController extends BaseController {
     const translation = await translate(text, { from: 'en', to: 'vi' });
 
     return this.getBotMessage(cUser, translation.text);
+  }
+
+  async balanceChemicalEquation(text, cUser) {
+    const result = balanceChemicalEquation(text);
+    let content;
+
+    if (!result) {
+      content = 'Phương trình không hợp lệ';
+    } else if (result === true) {
+      content = text;
+    } else {
+      content = result;
+    }
+
+    return this.getBotMessage(cUser, content);
   }
 
   getBotMessage(cUser, content, dataContent = null) {
