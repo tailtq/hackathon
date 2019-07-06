@@ -58,7 +58,7 @@ process.on('unhandledRejection', (reason, promise) => {
   console.log(reason);
 });
 
-http.listen(process.env.APP_PORT, (error) => {
+http.listen(process.env.PORT || process.env.APP_PORT, (error) => {
   if (error) {
     throw error;
   }
