@@ -99,6 +99,15 @@
 
                                     <div class="input-group">
                                         <span class="input-group-addon">
+                                            <i class="material-icons">create</i>
+                                        </span>
+                                        <input type="text" class="form-control" placeholder="Description..."
+                                               name="description" value="<%= old('description') %>">
+                                    </div>
+                                    <p class="text-center color-red"><%= errors('description') %></p>
+
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
                                             <i class="material-icons">subject</i>
                                         </span>
 

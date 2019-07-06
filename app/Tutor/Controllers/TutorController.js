@@ -7,7 +7,7 @@ import knex from '../../../config/database';
 class TutorController extends UserController {
   type = 'tutors';
 
-  signUpFields = ['majors', 'email', 'password', 'name', 'phone', 'address'];
+  signUpFields = ['majors', 'email', 'password', 'name', 'phone', 'address', 'description'];
 
   constructor() {
     super();
@@ -51,7 +51,13 @@ class TutorController extends UserController {
   }
 
   async contactOnlineTutors(req, res) {
-    const tutors = await this.repository.getAllBy({ status: 1 }, ['id', 'name', 'avatar']);
+    let { majors } = req.query;
+    let condition = { status: 1 };
+    if (majors) {
+      majors = majors.split(',').filter(e => Number.isInteger(parseInt(e))).join(',');
+      condition = q => q.where(knex.raw(`"majorIds" @> ARRAY[${majors}]`)).where({ status: 1 });
+    }
+    const tutors = await this.repository.getAllBy(condition, ['id', 'name', 'avatar', 'description']);
 
     return res.render('app/client/tutors/list-online', this.hashIds({ tutors }));
   }
