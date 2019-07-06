@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@babel/plugin-proposal-class-properties": "^7.3.4",
+    "@k3rn31p4nic/google-translate-api": "^1.0.5",
     "@sokratis/passport-linkedin-oauth2": "^2.1.0",
     "aws-sdk": "^2.437.0",
     "axios": "^0.18.0",

@@ -49,8 +49,14 @@ $(function () {
     }
 
     generateMessage(msg, 'self');
-    sendMessage(msg, function () {
-      generateMessage(msg, 'user');
+
+    sendMessage(msg, (res) => {
+      const { data } = res;
+      if (data.bot && data.bot.content) {
+        generateMessage(data.bot.content, 'user');
+      } else {
+        generateMessage('Tôi không hiểu được câu này', 'user');
+      }
     });
   });
 

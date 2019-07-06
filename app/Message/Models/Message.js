@@ -22,6 +22,7 @@ const messageSchema = new Schema({
     required: true,
     trim: true,
   },
+  dataContent: JSON,
 }, { timestamps: true });
 
 export default mongoose.model('messages', messageSchema);
