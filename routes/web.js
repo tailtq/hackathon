@@ -6,16 +6,19 @@ import studentRoutes from '../app/Student/routes';
 import tutorRoutes from '../app/Tutor/routes';
 import messageRoutes from '../app/Message/routes';
 import handleException from '../infrastructure/Middleware/handleException';
+import { verifyNotAuthentication } from '../infrastructure/Middleware/verifyAuthentication';
 
 const router = express.Router();
-
-router.use('/dashboard', dashboardRoutes);
 
 router.use('/students', studentRoutes);
 
 router.use('/tutors', tutorRoutes);
 
+router.use(verifyNotAuthentication);
+
 router.use('/messages', messageRoutes);
+
+router.use('/', dashboardRoutes);
 
 router.use(handleException);
 
