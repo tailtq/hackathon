@@ -4,6 +4,7 @@ import UserController from '../../../infrastructure/Controllers/UserController';
 import MajorRepository from '../../Major/Repositories/MajorRepository';
 import knex from '../../../config/database';
 import NotFoundException from '../../../infrastructure/Exceptions/NotFoundException';
+import TutoringSessionRepository from '../../TutoringSession/Repositories/TutoringSessionRepository';
 
 class TutorController extends UserController {
   type = 'tutors';
@@ -14,6 +15,7 @@ class TutorController extends UserController {
     super();
     this.repository = TutorRepository.getRepository();
     this.majorRepository = MajorRepository.getRepository();
+    this.tutoringSessionRepository = TutoringSessionRepository.getRepository();
   }
 
   async signUp(req, res) {
@@ -75,10 +77,30 @@ class TutorController extends UserController {
     return res.render('app/client/tutors/detail', this.hashIds({ tutor }));
   }
 
-  contact(req, res) {
+  async contact(req, res) {
+    const { id } = req.params;
+    const tutor = await this.repository.getById(id, ['id']);
 
+    if (!tutor) {
+      throw new NotFoundException();
+    }
 
-    return res.render('app/client/tutors/contact');
+    const room = this.pad(parseInt(Math.random() * 1000000000), 9);
+    const data = {
+      tutorId: tutor.id,
+      studentId: req.session.cUser.id,
+      startedAt: new Date(),
+      room,
+    };
+    const session = await knex.transaction(trx => this.tutoringSessionRepository.create(data, trx, ['room']));
+
+    return res.redirect(`/r/${session.room}`);
+  }
+
+  pad(n, width, z) {
+    z = z || '0';
+    n = n + '';
+    return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
   }
 }
 
