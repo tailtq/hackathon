@@ -10,12 +10,7 @@
   },
   "dependencies": {
     "@babel/plugin-proposal-class-properties": "^7.3.4",
-<<<<<<< HEAD
-    "@google-cloud/translate": "^4.1.1",
-    "@k3rn31p4nic/google-translate-api": "github:k3rn31p4nic/google-translate-api",
-=======
     "@k3rn31p4nic/google-translate-api": "^1.0.5",
->>>>>>> d111b73d50a8e960cd9d45b8ed8810391deb2e8f
     "@sokratis/passport-linkedin-oauth2": "^2.1.0",
     "aws-sdk": "^2.437.0",
     "axios": "^0.18.0",
