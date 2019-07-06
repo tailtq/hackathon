@@ -1,5 +1,5 @@
 import ResponseHelper from '../Helpers/ResponseHelper';
-import { decode, encode } from '../Helpers/Core/HashidsHelper';
+import { decode, encode, loopHashids } from '../Helpers/Core/HashidsHelper';
 
 class BaseController {
   filterFields(input, fields, addition) {
@@ -30,6 +30,10 @@ class BaseController {
         return next(e);
       }
     };
+  }
+
+  hashIds(data) {
+    return loopHashids(data);
   }
 }
 

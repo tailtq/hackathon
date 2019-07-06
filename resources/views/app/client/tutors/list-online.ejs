@@ -1,0 +1,31 @@
+<% layout('../../../layouts/client/app') %>
+
+<div class="row">
+    <% if (!tutors.length) { %>
+        <br>
+        <p class="text-center mt-4">Hiện tại không có giáo viên nào nào</p>
+    <% } %>
+
+    <% tutors.forEach((tutor) => { %>
+        <div class="col-md-4">
+            <div class="card card-testimonial">
+                <div class="icon">
+                    <i class="material-icons">format_quote</i>
+                </div>
+                <div class="card-content">
+                    <h5 class="card-description">
+                        <%= tutor.description %>
+                    </h5>
+                </div>
+                <div class="footer">
+                    <h4 class="card-title"><a href="/tutors/<%= tutor.id %>"><%= tutor.name %></a></h4>
+                    <div class="card-avatar">
+                        <a href="/tutors/<%= tutor.id %>">
+                            <img class="img" src="<%= tutor.avatar %>"/>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <% }); %>
+</div>

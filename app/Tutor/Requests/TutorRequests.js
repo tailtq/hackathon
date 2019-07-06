@@ -16,6 +16,8 @@ class TutorRequests extends UserRequests {
       this.getPasswordRule(),
       this.getPasswordConfirmationRule(),
       this.getAddressRule(),
+      this.getProfessionRule(),
+      this.getDescriptionRule(),
       this.getMajorRule(),
       this.validate,
     ];
@@ -23,6 +25,14 @@ class TutorRequests extends UserRequests {
 
   getMajorRule() {
     return check('majors').trim().not().isEmpty().isString();
+  }
+
+  getDescriptionRule() {
+    return check('description').trim().isString().not().isEmpty().isLength({ min: 1, max: 255 });
+  }
+
+  getProfessionRule() {
+    return check('profession').trim().isString().not().isEmpty().isLength({ min: 1, max: 100 });
   }
 }
 

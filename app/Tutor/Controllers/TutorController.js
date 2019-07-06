@@ -1,19 +1,21 @@
-import bcrypt from 'bcryptjs';
 import getSlug from 'speakingurl';
 import TutorRepository from '../Repositories/TutorRepository';
 import UserController from '../../../infrastructure/Controllers/UserController';
 import MajorRepository from '../../Major/Repositories/MajorRepository';
 import knex from '../../../config/database';
+import NotFoundException from '../../../infrastructure/Exceptions/NotFoundException';
+import TutoringSessionRepository from '../../TutoringSession/Repositories/TutoringSessionRepository';
 
 class TutorController extends UserController {
   type = 'tutors';
 
-  signUpFields = ['majors', 'email', 'password', 'name', 'phone', 'address'];
+  signUpFields = ['majors', 'email', 'password', 'name', 'phone', 'address', 'profession', 'description'];
 
   constructor() {
     super();
     this.repository = TutorRepository.getRepository();
     this.majorRepository = MajorRepository.getRepository();
+    this.tutoringSessionRepository = TutoringSessionRepository.getRepository();
   }
 
   async signUp(req, res) {
@@ -51,12 +53,54 @@ class TutorController extends UserController {
     return ids;
   }
 
-  contact(req, res) {
-    return res.render('app/client/tutors/contact');
+  async listOnlineTutors(req, res) {
+    let { majors } = req.query;
+    let condition = { status: 1 };
+
+    if (majors) {
+      majors = majors.split(',').filter(e => Number.isInteger(parseInt(e))).join(',');
+      condition = q => q.where(knex.raw(`"majorIds" @> ARRAY[${majors}]`)).where({ status: 1 });
+    }
+    const tutors = await this.repository.getAllBy(condition, ['id', 'name', 'avatar', 'description']);
+
+    return res.render('app/client/tutors/list-online', this.hashIds({ tutors }));
   }
 
-  contactDetail(req, res) {
-    return res.render('app/client/tutors/contact');
+  async viewProfile(req, res) {
+    const { id } = req.params;
+    const tutor = await this.repository.getById(id);
+
+    if (!tutor) {
+      throw new NotFoundException();
+    }
+
+    return res.render('app/client/tutors/detail', this.hashIds({ tutor }));
+  }
+
+  async contact(req, res) {
+    const { id } = req.params;
+    const tutor = await this.repository.getById(id, ['id']);
+
+    if (!tutor) {
+      throw new NotFoundException();
+    }
+
+    const room = this.pad(parseInt(Math.random() * 1000000000), 9);
+    const data = {
+      tutorId: tutor.id,
+      studentId: req.session.cUser.id,
+      startedAt: new Date(),
+      room,
+    };
+    const session = await knex.transaction(trx => this.tutoringSessionRepository.create(data, trx, ['room']));
+
+    return res.redirect(`/r/${session.room}`);
+  }
+
+  pad(n, width, z) {
+    z = z || '0';
+    n = n + '';
+    return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
   }
 }
 

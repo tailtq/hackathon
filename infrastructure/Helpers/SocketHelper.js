@@ -84,9 +84,9 @@ function configSocket(http) {
 
 function updateStatus(id, type, status) {
   if (type === 'students') {
-    studentRepository.updateWithoutTrans({ id }, { status });
+    studentRepository.updateWithoutTrans({ id }, { status }).then((err, data) => {});
   } else if (type === 'tutors') {
-    tutorRepository.updateWithoutTrans({ id }, { status });
+    tutorRepository.updateWithoutTrans({ id }, { status }).then((err, data) => {});
   }
 }
 

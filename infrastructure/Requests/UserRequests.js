@@ -162,9 +162,9 @@ class UserRequests extends BaseRequest {
     return check('passwordConfirmation')
       .custom((value, { req }) => {
         if (req.body.password && !value) {
-          return Promise.reject(new BadRequestException());
+          return Promise.reject(new BadRequestException('Invalid value'));
         } else if (value !== req.body.password) {
-          return Promise.reject(new BadRequestException());
+          return Promise.reject(new BadRequestException('Invalid value'));
         }
         return true;
       });
