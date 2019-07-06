@@ -36,6 +36,8 @@ router.get('/sign-out', tutorController.callMethod('signOut'));
 
 router.use(verifyNotAuthentication);
 
+router.get('/', tutorController.callMethod('listAll'));
+
 router.get('/online', tutorController.callMethod('listOnlineTutors'));
 
 router.get('/:id', tutorController.callMethod('viewProfile'));

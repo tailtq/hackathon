@@ -9,34 +9,38 @@
                     <form method="post" action="">
                         <div class="card card-login card-hidden">
                             <div class="card-header text-center" data-background-color="rose">
-                                <h4 class="card-title">Tutor Login</h4>
+                                <h4 class="card-title">Tutor Sign In</h4>
                             </div>
                             <div class="card-content">
                                 <div class="input-group">
-                                        <span class="input-group-addon">
-                                            <i class="material-icons">email</i>
-                                        </span>
+                                    <span class="input-group-addon">
+                                        <i class="material-icons">email</i>
+                                    </span>
                                     <div class="form-group label-floating">
-                                        <label class="control-label">Email address</label>
+                                        <label class="control-label">Địa chỉ mail</label>
                                         <input type="text" class="form-control" name="email" value="<%= old('email') %>">
                                     </div>
                                 </div>
                                 <p class="text-center color-red"><%= errors('email') %></p>
 
                                 <div class="input-group">
-                                        <span class="input-group-addon">
-                                            <i class="material-icons">lock_outline</i>
-                                        </span>
+                                    <span class="input-group-addon">
+                                        <i class="material-icons">lock_outline</i>
+                                    </span>
                                     <div class="form-group label-floating">
-                                        <label class="control-label">Password</label>
+                                        <label class="control-label">Mật khẩu</label>
                                         <input type="password" class="form-control" name="password">
                                     </div>
                                 </div>
                                 <p class="text-center color-red"><%= errors('password') %></p>
                             </div>
                             <div class="footer text-center">
-                                <button type="submit" class="btn btn-rose btn-simple btn-wd btn-lg">Let's go</button>
+                                <button type="submit" class="btn btn-rose btn-simple btn-wd btn-lg">Đăng nhập</button>
                             </div>
+                            <p class="text-center">
+                                <a href="/students/sign-in" class="text-underline">Student sign in</a> &nbsp;
+                                <a href="/tutors/sign-up" class="text-underline">Sign up</a>
+                            </p>
                         </div>
                     </form>
                 </div>
