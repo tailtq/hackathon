@@ -64,7 +64,7 @@
       "responses": [
         "Bạn gặp vấn đề gì nào ?",
         "Bạn đang gặp khó khăn gì à, hãy chia sẻ cho tôi, tôi có thể giúp bạn",
-        "Tôi có thể giúp bạn"        
+        "Tôi có thể giúp bạn"
       ],
       "context": [
         ""
@@ -73,11 +73,11 @@
     {
       "tag": "introduction",
       "responses": [
-        "Tối là chat bot có khả năng giúp bạn giải những vấn đề cơ bản trong cuộc sống",
+        "Tôi là chat bot có khả năng giúp bạn giải những vấn đề cơ bản trong cuộc sống",
         "Tôi có thể giúp bạn một ít, ngoài ra tôi có thể kết nối gia sư với bạn",
-        "Là một chatbot tôi có thể giúp bạn trong vài lĩnh vực như toán, hóa, lích sử ...",
-        "Tối có thể giúp bạn vài bài tập đơn giản như cân bằng hóa học, giải phương trình, ...",
-        "Tối là chatbot, rất hân hạnh làm quen với bạn"
+        "Là một chatbot tôi có thể giúp bạn trong vài lĩnh vực như toán, hóa, lịch sử ...",
+        "Tôi có thể giúp bạn vài bài tập đơn giản như cân bằng hóa học, giải phương trình, ...",
+        "Tôi là chatbot, rất hân hạnh làm quen với bạn"
       ],
       "context": [
         ""
@@ -95,12 +95,11 @@
       "context": [
         ""
       ]
-      
     },
     {
       "tag": "solveMath",
       "responses": [
-        "Đây là kết quả của tối, bạn có thể tham khảo:\n",
+        "Đây là kết quả của tôi, bạn có thể tham khảo:\n",
         "Đây là kết quả: \n",
         "Kết quả nè:\n",
         "Kết quả:"
@@ -108,30 +107,27 @@
       "context": [
         ""
       ]
-      
     },
     {
       "tag": "solveChem",
       "responses": [
-        "Đây là kết quả của tối, bạn có thể tham khảo:\n",
+        "Đây là kết quả của tôi, bạn có thể tham khảo:\n",
         "Đây là kết quả: \n",
         "Kết quả:"
       ],
       "context": [
         ""
       ]
-      
     },
     {
       "tag": "getInfo",
       "responses": [
-        "Đây là kết quả của tối, bạn có thể tham khảo:\n",
+        "Đây là kết quả của tôi, bạn có thể tham khảo:\n",
         "Tôi đã có kết quả, bạn thấy thế nào:\n"
       ],
       "context": [
         ""
       ]
-      
     }
   ]
 }

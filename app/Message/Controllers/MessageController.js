@@ -13,6 +13,7 @@ import TutorRepository from '../../Tutor/Repositories/TutorRepository';
 
 const intentsList = intentJson.intents;
 const intentsListCannot = intentsList.find(e => e.tag === 'cant').responses;
+const intentsListIntroduction = intentsList.find(e => e.tag === 'introduction').responses;
 
 class MessageController extends BaseController {
   constructor() {
@@ -50,11 +51,17 @@ class MessageController extends BaseController {
     if (findTag) {
       const botRes = findTag.responses[Math.floor(Math.random() * (findTag.responses.length - 1))];
       processes.push(this.getBotMessage(cUser, botRes));
-      [userMessage, botMessage] = await Promise.all(processes);
+
+      if (findTag.tag === 'greeting') {
+        processes.push(this.getBotMessage(cUser, intentsListIntroduction[Math.floor(Math.random() * (intentsListIntroduction.length - 1))]));
+      }
+
+      [userMessage, botMessage, additionalMessage] = await Promise.all(processes);
 
       return this.success(res, {
         user: userMessage,
         bot: botMessage || {},
+        additionalMessage,
       });
     }
 
