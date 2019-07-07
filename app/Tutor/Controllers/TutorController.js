@@ -61,7 +61,7 @@ class TutorController extends UserController {
       majors = this.filterMajors(majors);
       condition = q => q.where(knex.raw(`"majorIds" @> ARRAY[${majors}]`));
     }
-    let tutors = await this.repository.getAllBy(condition, ['id', 'name', 'avatar', 'description', 'majorIds']);
+    let tutors = await this.repository.getAllBy(condition, ['id', 'name', 'avatar', 'description', 'majorIds', 'profession']);
     tutors = await this.listMajorsByTutors(tutors);
 
     return res.render('app/client/tutors/list-online', this.hashIds({ tutors }));
@@ -75,7 +75,7 @@ class TutorController extends UserController {
       majors = this.filterMajors(majors);
       condition = q => q.where(knex.raw(`"majorIds" @> ARRAY[${majors}]`)).where({ status: 1 });
     }
-    let tutors = await this.repository.getAllBy(condition, ['id', 'name', 'avatar', 'description', 'majorIds']);
+    let tutors = await this.repository.getAllBy(condition, ['id', 'name', 'avatar', 'description', 'majorIds', 'profession']);
     tutors = await this.listMajorsByTutors(tutors);
 
     return res.render('app/client/tutors/list-online', this.hashIds({ tutors }));
