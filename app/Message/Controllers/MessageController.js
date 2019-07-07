@@ -9,12 +9,15 @@ import solve from '../../../infrastructure/Helpers/Wolframalpha';
 import search from '../../../infrastructure/Helpers/WikiHelper';
 import MajorRepository from '../../Major/Repositories/MajorRepository';
 import * as intentJson from '../../../config/intents.json'
-const intentsList = intentJson.intents
+import TutorRepository from '../../Tutor/Repositories/TutorRepository';
+
+const intentsList = intentJson.intents;
 
 class MessageController extends BaseController {
   constructor() {
     super();
     this.majorRepository = MajorRepository.getRepository();
+    this.tutorRepository = TutorRepository.getRepository();
   }
 
   async loadMessages(req, res) {
@@ -39,15 +42,9 @@ class MessageController extends BaseController {
       Message.create(userMessage),
     ];
 
-
-
     // Handle Wit.AI
     const condition = content.trim().toLowerCase();
     const testCase = await this.callWitAI(content);
-    
-    console.log(testCase);
-    
-    
     const findTag = intentsList.find(e => e.tag == testCase.keyword)
     if (findTag) {
       const botRes = findTag.responses[Math.floor(Math.random() * findTag.responses.length)];
@@ -57,7 +54,6 @@ class MessageController extends BaseController {
       return this.success(res, {
         user: userMessage,
         bot: botMessage || {},
-        additionalMessage,
       });
     }
 
@@ -89,10 +85,22 @@ class MessageController extends BaseController {
 
       if (majors.length) {
         let idsString = '';
+        let ids = [];
         majors.forEach((major) => {
           idsString += major.id;
+          ids.push(major.id);
         });
-        additionalMessage = `Chúng tôi có thể tìm những giảng viên phù hợp với bạn theo <a href="/tutors/online?majors=${idsString}">link</a> này!`;
+        const tutors = await this.tutorRepository.getOnlineTutorsWithMajors(ids, 3);
+        let imagesString = '<div class="message-images">';
+        tutors.forEach(tutor => imagesString += `
+          <a href="/tutors/${this.encode(tutor.id)}">
+            <img src="${tutor.avatar}">
+            <p>${tutor.name}</p>
+          </a>
+        `);
+        imagesString += '</div>';
+
+        additionalMessage = `${imagesString}<span>Chúng tôi đã tìm thấy những giảng viên phù hợp với bạn. Hoặc bạn có thể theo <a href="/tutors/online?majors=${idsString}">link</a> này để xem các giảng viên khác!`;
         additionalMessage = await this.getBotMessage(cUser, additionalMessage);
       } else {
         additionalMessage = `Bạn có thể tìm những giảng viên phù hợp theo <a href="/tutors/online">link</a> này!`;
@@ -202,17 +210,17 @@ class MessageController extends BaseController {
       if (dataContent) {
         return this.getBotMessage(cUser, dataContent.content, dataContent);
       }
-  
+
       const question = await translate(text, { from: 'vi', to: 'en' });
       const result = await solve(question.text);
-  
+
       if (result) {
         const answer = await translate(result, { from: 'en', to: 'vi' });
         content = answer.text;
       } else {
         content = 'Tôi không thể hiểu message này';
       }
-  
+
       return this.getBotMessage(cUser, content);
     } catch (e) {
       return this.getBotMessage(cUser, "Tôi chưa hiểu, bạn có thể  nhắc lại được không?");

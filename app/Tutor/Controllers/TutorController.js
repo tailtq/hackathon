@@ -64,7 +64,7 @@ class TutorController extends UserController {
     let tutors = await this.repository.getAllBy(condition, ['id', 'name', 'avatar', 'description', 'majorIds', 'profession']);
     tutors = await this.listMajorsByTutors(tutors);
 
-    return res.render('app/client/tutors/list-online', this.hashIds({ tutors }));
+    return res.render('app/client/tutors/list', this.hashIds({ tutors }));
   }
 
   async listOnlineTutors(req, res) {
