@@ -12,6 +12,7 @@ import * as intentJson from '../../../config/intents.json'
 import TutorRepository from '../../Tutor/Repositories/TutorRepository';
 
 const intentsList = intentJson.intents;
+const intentsListCannot = intentsList.find(e => e.tag === 'cant').responses;
 
 class MessageController extends BaseController {
   constructor() {
@@ -47,7 +48,7 @@ class MessageController extends BaseController {
     const testCase = await this.callWitAI(content);
     const findTag = intentsList.find(e => e.tag == testCase.keyword)
     if (findTag) {
-      const botRes = findTag.responses[Math.floor(Math.random() * findTag.responses.length)];
+      const botRes = findTag.responses[Math.floor(Math.random() * (findTag.responses.length - 1))];
       processes.push(this.getBotMessage(cUser, botRes));
       [userMessage, botMessage] = await Promise.all(processes);
 
@@ -80,7 +81,7 @@ class MessageController extends BaseController {
     [userMessage, botMessage] = await Promise.all(processes);
     let additionalMessage = null;
 
-    if (botMessage.content === 'Tôi không thể hiểu message này' && testCase.subject) {
+    if (intentsListCannot.indexOf(botMessage.content) >= 0 && testCase.subject) {
       let majors = await this.majorRepository.getAllBy(q => q.where('slug', 'ilike', `%${testCase.subject}%`), ['id']);
 
       if (majors.length) {
@@ -149,7 +150,7 @@ class MessageController extends BaseController {
       const imageUrl = data.math.variants[0].answers[0].answer_url;
       content = `<img src="${imageUrl}"/>`;
     } else {
-      content = 'Tôi không thể hiểu message này';
+      content = this.randomFailedContent();
     }
 
     return this.getBotMessage(cUser, content, data);
@@ -218,7 +219,7 @@ class MessageController extends BaseController {
         const answer = await translate(result, { from: 'en', to: 'vi' });
         content = answer.text;
       } else {
-        content = 'Tôi không thể hiểu message này';
+        content = this.randomFailedContent();
       }
 
       return this.getBotMessage(cUser, content);
@@ -238,6 +239,10 @@ class MessageController extends BaseController {
     };
 
     return Message.create(botMessage);
+  }
+
+  randomFailedContent() {
+    return intentsListCannot[Math.floor(Math.random() * (intentsListCannot.length - 1))];
   }
 }
 
