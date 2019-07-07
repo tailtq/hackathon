@@ -22,7 +22,7 @@ configSocket(http);
 const PostgreSqlStore = ConnectPg(Session);
 const session = Session({
   secret: process.env.SESSION_SECRET,
-  name: 'camil.session',
+  name: 'hackathon.session',
   resave: false,
   saveUninitialized: true,
   cookie: {
