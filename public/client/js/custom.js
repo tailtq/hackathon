@@ -57,6 +57,9 @@ $(function () {
       } else {
         generateMessage('Tôi không hiểu được câu này', 'user');
       }
+      if (data.additionalMessage) {
+        generateMessage(data.additionalMessage.content, 'user');
+      }
     });
   });
 

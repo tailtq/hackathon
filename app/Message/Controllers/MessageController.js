@@ -7,10 +7,12 @@ import Message from '../Models/Message';
 import balanceChemicalEquation from '../../../infrastructure/Helpers/ChemicalEquationBalancerHelper';
 import solve from '../../../infrastructure/Helpers/Wolframalpha';
 import search from '../../../infrastructure/Helpers/WikiHelper';
+import MajorRepository from '../../Major/Repositories/MajorRepository';
 
 class MessageController extends BaseController {
   constructor() {
     super();
+    this.majorRepository = MajorRepository.getRepository();
   }
 
   async loadMessages(req, res) {
@@ -39,18 +41,20 @@ class MessageController extends BaseController {
 
     // Handle Wit.AI
     const condition = content.trim().toLowerCase();
+    const testCase = await this.callWitAI(content);
 
-    if (condition.indexOf('giải bài toán') >= 0) {
+    if (condition.indexOf('giải bài toán') >= 0 || testCase.keyword === 'solvemath' || testCase.keyword === 'coccoc') {
       processes.push(this.searchAlgebraQuestion(content, cUser));
-    } else if (condition.indexOf('cân bằng phương trình') >= 0) {
+      testCase.subject = 'math';
+    } else if (condition.indexOf('cân bằng phương trình') >= 0 || testCase.keyword === 'chemicalbalance') {
       const text = content.substr('cân bằng phương trình: '.length).trim();
 
       processes.push(this.balanceChemicalEquation(text, cUser));
-    } else if (condition.indexOf('nguyên tố hoá học') >= 0) {
-      const search = content.substr('nguyên tố hoá học '.length).trim().toLowerCase();
+    } else if (condition.indexOf('tìm nguyên tố hoá học') >= 0 || testCase.keyword === 'chemicalelement') {
+      const search = content.substr('tìm nguyên tố hoá học '.length).trim().toLowerCase();
 
       processes.push(this.searchChemicalElement(search, cUser));
-    } else if (condition.indexOf('dịch giúp tôi') >= 0) {
+    } else if (condition.indexOf('dịch giúp tôi') >= 0 || testCase.subject === 'english') {
       const text = content.substr('dịch giúp tôi: '.length).trim().toLowerCase();
 
       processes.push(this.translateText(text, cUser));
@@ -60,19 +64,69 @@ class MessageController extends BaseController {
     // TODO: Đổi đơn vị -> Đợi Wit.AI
 
     [userMessage, botMessage] = await Promise.all(processes);
+    let additionalMessage = null;
+
+    if (botMessage.content === 'Tôi không thể hiểu message này' && testCase.subject) {
+      let majors = await this.majorRepository.getAllBy(q => q.where('slug', 'ilike', `%${testCase.subject}%`), ['id']);
+
+      if (majors.length) {
+        let idsString = '';
+        majors.forEach((major) => {
+          idsString += major.id;
+        });
+        additionalMessage = `Chúng tôi có thể tìm những giảng viên phù hợp với bạn theo <a href="/tutors/online?majors=${idsString}">link</a> này!`;
+        additionalMessage = await this.getBotMessage(cUser, additionalMessage);
+      } else {
+        additionalMessage = `Bạn có thể tìm những giảng viên phù hợp theo <a href="/tutors/online">link</a> này!`;
+        additionalMessage = await this.getBotMessage(cUser, additionalMessage);
+      }
+    }
 
     return this.success(res, {
       user: userMessage,
-      bot: botMessage || {}
+      bot: botMessage || {},
+      additionalMessage,
     });
+  }
+
+  async callWitAI(query) {
+    const result = await axios.get('https://api.wit.ai/message?v=20190707', {
+      headers: { Authorization: 'Bearer N4D2I4RANVOY4HCKD5W4KMDME24REXPH' },
+      params: { q: query }
+    });
+    let keyword;
+    let subject;
+    const { entities } = result.data;
+
+    if (Object.keys(entities)[0] === 'english') {
+      subject = 'english';
+    } else if (entities.agents) {
+      keyword = entities.agents[0].value;
+    } else if (entities.intent) {
+      keyword = entities.intent[0].value;
+    } else {
+      keyword = Object.keys(entities)[0];
+    }
+
+    return {
+      keyword,
+      subject: (['greeting', 'subjects'].indexOf(subject) >= 0) ? null : subject
+    };
   }
 
   async searchAlgebraQuestion(text, cUser) {
     const res = await axios.get(`https://coccoc.com/composer/math?q=${encodeURI(text)}`);
     const { data } = res;
-    const imageUrl = data.math.variants[0].answers[0].answer_url;
+    let content;
 
-    return this.getBotMessage(cUser, `<img src="${imageUrl}"/>`, data);
+    if (data.math.variants[0]) {
+      const imageUrl = data.math.variants[0].answers[0].answer_url;
+      content = `<img src="${imageUrl}"/>`;
+    } else {
+      content = 'Tôi không thể hiểu message này';
+    }
+
+    return this.getBotMessage(cUser, content, data);
   }
 
   async searchChemicalElement(search, cUser) {

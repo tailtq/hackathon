@@ -3,7 +3,7 @@ import Hashids from 'hashids';
 import BadRequestException from '../../Exceptions/BadRequestException';
 import { charsQuantity, hashidsChars, keys } from '../../../config/hashids';
 
-const hashids = new Hashids('Swaptime', charsQuantity, hashidsChars);
+const hashids = new Hashids('Hackathon', charsQuantity, hashidsChars);
 
 export const encode = id => hashids.encodeHex(id);
 
