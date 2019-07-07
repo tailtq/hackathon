@@ -47,17 +47,18 @@
 }
 
 .chat-box {
- display: none;
- background: #efefef;
- position: fixed;
- right: 30px;
- bottom: 50px;
- width: 350px;
- max-width: 85vw;
- max-height: 100vh;
- border-radius: 5px;
- /*   box-shadow: 0px 5px 35px 9px #464a92; */
- box-shadow: 0px 5px 35px 9px #ccc;
+  display: none;
+  background: #efefef;
+  position: fixed;
+  right: 30px;
+  bottom: 50px;
+  width: 65%;
+  /* height: 100vh; */
+  max-width: 85vw;
+  max-height: 100vh;
+  border-radius: 5px;
+  /* box-shadow: 0px 5px 35px 9px #464a92; */
+  box-shadow: 0px 5px 35px 9px #ccc;
 }
 
 .chat-box-toggle {
@@ -152,7 +153,7 @@
 
 .chat-logs {
  padding: 15px;
- height: 370px;
+ height: 70vh;
  overflow-y: scroll;
 }
 

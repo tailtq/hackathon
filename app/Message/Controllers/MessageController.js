@@ -8,6 +8,8 @@ import balanceChemicalEquation from '../../../infrastructure/Helpers/ChemicalEqu
 import solve from '../../../infrastructure/Helpers/Wolframalpha';
 import search from '../../../infrastructure/Helpers/WikiHelper';
 import MajorRepository from '../../Major/Repositories/MajorRepository';
+import * as intentJson from '../../../config/intents.json'
+const intentsList = intentJson.intents
 
 class MessageController extends BaseController {
   constructor() {
@@ -36,9 +38,28 @@ class MessageController extends BaseController {
     const processes = [
       Message.create(userMessage),
     ];
+
+
+
     // Handle Wit.AI
     const condition = content.trim().toLowerCase();
     const testCase = await this.callWitAI(content);
+    
+    console.log(testCase);
+    
+    
+    const findTag = intentsList.find(e => e.tag == testCase.keyword)
+    if (findTag) {
+      const botRes = findTag.responses[Math.floor(Math.random() * findTag.responses.length)];
+      processes.push(this.getBotMessage(cUser, botRes));
+      [userMessage, botMessage] = await Promise.all(processes);
+
+      return this.success(res, {
+        user: userMessage,
+        bot: botMessage || {},
+        additionalMessage,
+      });
+    }
 
     if (condition.indexOf('giải bài toán') >= 0 || testCase.keyword === 'solvemath' || testCase.keyword === 'coccoc') {
       processes.push(this.searchAlgebraQuestion(content, cUser));
@@ -175,23 +196,27 @@ class MessageController extends BaseController {
   }
 
   async handleRemainCases(text, cUser) {
-    let content;
-    const dataContent = await search(text);
-    if (dataContent) {
-      return this.getBotMessage(cUser, dataContent.content, dataContent);
+    try {
+      let content;
+      const dataContent = await search(text);
+      if (dataContent) {
+        return this.getBotMessage(cUser, dataContent.content, dataContent);
+      }
+  
+      const question = await translate(text, { from: 'vi', to: 'en' });
+      const result = await solve(question.text);
+  
+      if (result) {
+        const answer = await translate(result, { from: 'en', to: 'vi' });
+        content = answer.text;
+      } else {
+        content = 'Tôi không thể hiểu message này';
+      }
+  
+      return this.getBotMessage(cUser, content);
+    } catch (e) {
+      return this.getBotMessage(cUser, "Tôi chưa hiểu, bạn có thể  nhắc lại được không?");
     }
-
-    const question = await translate(text, { from: 'vi', to: 'en' });
-    const result = await solve(question.text);
-
-    if (result) {
-      const answer = await translate(result, { from: 'en', to: 'vi' });
-      content = answer.text;
-    } else {
-      content = 'Tôi không thể hiểu message này';
-    }
-
-    return this.getBotMessage(cUser, content);
   }
 
   getBotMessage(cUser, content, dataContent = null) {
