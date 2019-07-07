@@ -81,6 +81,7 @@ $(function () {
   }
 
   $('#chat-circle').click(function () {
+    setTimeout(() => $('.chat-logs').scrollTop(50000), 200);
     $('#chat-circle').toggle('scale');
     $('.chat-box').toggle('scale');
   });
