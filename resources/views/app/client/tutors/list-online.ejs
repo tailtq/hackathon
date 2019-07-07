@@ -17,6 +17,11 @@
                         <%= tutor.description %>
                     </h5>
                 </div>
+                <div>
+                    <% tutor.majors.forEach((major) => { %>
+                        <a class="btn btn-rose btn-xs"><%= major.name %></a>
+                    <% }) %>
+                </div>
                 <div class="footer">
                     <h4 class="card-title"><a href="/tutors/<%= tutor.id %>"><%= tutor.name %></a></h4>
                     <div class="card-avatar">

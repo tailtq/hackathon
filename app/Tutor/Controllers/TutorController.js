@@ -53,17 +53,45 @@ class TutorController extends UserController {
     return ids;
   }
 
+  async listAll(req, res) {
+    let { majors } = req.query;
+    let condition = {};
+
+    if (majors) {
+      majors = this.filterMajors(majors);
+      condition = q => q.where(knex.raw(`"majorIds" @> ARRAY[${majors}]`));
+    }
+    let tutors = await this.repository.getAllBy(condition, ['id', 'name', 'avatar', 'description', 'majorIds']);
+    tutors = await this.listMajorsByTutors(tutors);
+
+    return res.render('app/client/tutors/list-online', this.hashIds({ tutors }));
+  }
+
   async listOnlineTutors(req, res) {
     let { majors } = req.query;
     let condition = { status: 1 };
 
     if (majors) {
-      majors = majors.split(',').filter(e => Number.isInteger(parseInt(e))).join(',');
+      majors = this.filterMajors(majors);
       condition = q => q.where(knex.raw(`"majorIds" @> ARRAY[${majors}]`)).where({ status: 1 });
     }
-    const tutors = await this.repository.getAllBy(condition, ['id', 'name', 'avatar', 'description']);
+    let tutors = await this.repository.getAllBy(condition, ['id', 'name', 'avatar', 'description', 'majorIds']);
+    tutors = await this.listMajorsByTutors(tutors);
 
     return res.render('app/client/tutors/list-online', this.hashIds({ tutors }));
+  }
+
+  filterMajors(majors) {
+    return majors.split(',').filter(e => Number.isInteger(parseInt(e))).join(',');;
+  }
+
+  async listMajorsByTutors(tutors) {
+    for (let i = 0; i < tutors.length; i++) {
+      const tutor = tutors[i];
+      tutor.majors = await this.majorRepository.getAllBy(q => q.whereIn('id', tutor.majorIds || []));
+    }
+
+    return tutors;
   }
 
   async viewProfile(req, res) {
